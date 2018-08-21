@@ -138,7 +138,7 @@ void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
         count++;
 
 
-    for(auto i = static_cast<size_t>(vertexAmount - 1); i >= 0; i--)
+    for(int i = vertexAmount - 1; i >= 0; i--)
     {
         //Проверка смежных вершин на посещённость
         if (vertexList[vertex][i] == 1 && !path[i]) {
