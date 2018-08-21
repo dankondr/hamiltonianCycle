@@ -55,21 +55,21 @@ int main() {
     if (vertexAmount <= 3) {
         if (vertexAmount == 3) {
             if (checkAdjacency(1, 3, vertexList)) {
-                std::cout << "Hamiltonian Cycle is real.\n";
+                std::cout << "Hamiltonian Cycle exists.\n";
             } else {
-                std::cout << "Hamiltonian Cycle is not real.\n";
+                std::cout << "Hamiltonian Cycle is not exists.\n";
             }
         } else {
-            std::cout << "Hamiltonian Cycle is not real.\n";
+            std::cout << "Hamiltonian Cycle is not exists.\n";
         }
         //} else if (conditionDirak(vertexList,vertexAmount)) {
-        //    cout << "Условие Дирака выполнено. Hamiltonian Cycle is real.\n";
+        //    cout << "Условие Дирака выполнено. Hamiltonian Cycle exists.\n";
     } else  {
         findHamiltonianCycle(vertexAmount, vertexList, count, vertex, path, vertexStack);
         if(count)
-            std::cout << "Hamiltonian Cycle is real.\n";
+            std::cout << "Hamiltonian Cycle exists.\n";
         else
-            std::cout << "Hamiltonian Cycle is not real.\n";
+            std::cout << "Hamiltonian Cycle is not exists.\n";
     }
 
     input.close();
