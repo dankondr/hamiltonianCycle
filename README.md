@@ -25,5 +25,5 @@ Graph1 //graph name
 0000010001010010
 ```
 
-Example of output:
-![Output example](https://image.ibb.co/i6AFkz/Get_Image_1.gif)
+Example of output:<br />
+<img src="https://image.ibb.co/i6AFkz/Get_Image_1.gif" width="500">
