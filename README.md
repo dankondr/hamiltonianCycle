@@ -4,7 +4,7 @@ It helps user to verify is there a hamiltonian cycle
 in a graph loaded from file which contains adjacency matrix.<br />
 Adjacency matrix should be in .txt file and be formatted as stated below.<br /><br />
 Adjacency matrix format:
-```
+```java
 Graph1 //graph name
 16 //number of vertex
 0111100000000000
