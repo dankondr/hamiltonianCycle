@@ -7,7 +7,6 @@
 using namespace std;
 
 typedef std::vector<std::vector<int>> ArrayMatrix;
-typedef std::vector<int> ArrayInt;
 typedef std::vector<bool> ArrayBool;
 typedef std::stack<int> StackInt;
 
@@ -16,12 +15,14 @@ void processInput(std::ifstream&, unsigned&, ArrayMatrix&);
 //Функция, вычисляющая степень вершины
 int getDeg(ArrayMatrix&, int, int);
 //Функция, проверяющая на условие Дирака
-bool conditionDirak(ArrayMatrix&, int);
+bool conditionDirac(ArrayMatrix&, int);
 //Рекурсивная функция поиска гамильтонового цикла
 void findHamiltonianCycle(int, ArrayMatrix&, int&,
                           int, ArrayBool&, StackInt&);
 //Проверка на смежность
 bool checkAdjacency(int, int, ArrayMatrix&);
+//Функция, проверяющая на теорему Оре
+bool oreTheorem(ArrayMatrix&, int);
 
 int main() {
     std::ifstream input;
@@ -42,11 +43,9 @@ int main() {
 
 
     //Вывод смежной матрицы
-    for (size_t i = 0; i < vertexAmount; i++)
-    {
+    for (int i = 0; i < vertexAmount; ++i) {
 
-        for (size_t j = 0; j < vertexAmount; j++)
-        {
+        for (int j = 0; j < vertexAmount; ++j) {
             std::cout << vertexList[i][j] << ' ';
         }
         std::cout << '\n';
@@ -62,9 +61,11 @@ int main() {
         } else {
             std::cout << "Hamiltonian Cycle is not exists.\n";
         }
-        //} else if (conditionDirak(vertexList,vertexAmount)) {
-        //    cout << "Условие Дирака выполнено. Hamiltonian Cycle exists.\n";
-    } else  {
+    } else if (conditionDirac(vertexList, vertexAmount)) {
+        std::cout << "Dirac's condition implemented. Hamiltonian Cycle exists.\n";
+    } else if (oreTheorem(vertexList, vertexAmount)) {
+        std::cout << "Ore's theorem implemented. Hamiltonian Cycle exists.\n";
+    } else {
         findHamiltonianCycle(vertexAmount, vertexList, count, vertex, path, vertexStack);
         if(count)
             std::cout << "Hamiltonian Cycle exists.\n";
@@ -87,12 +88,12 @@ void processInput(std::ifstream& input, unsigned& vertexAmount, ArrayMatrix& ver
     //Пропускается линия
     std::getline(input, line);
     //Копирование смежной матрицы в двойной вектор
-    for (size_t i = 0; i < vertexAmount; i++)
+    for (int i = 0; i < vertexAmount; ++i)
     {
         //Взятие линии в строку
         std::getline(input, line);
 
-        for (size_t j = 0; j < vertexAmount; j++)
+        for (int j = 0; j < vertexAmount; ++j)
         {
             //Символы переопределяются в числа
             vertexList[i].push_back(line[j] == '1' ? 1 : 0);
@@ -104,30 +105,23 @@ void processInput(std::ifstream& input, unsigned& vertexAmount, ArrayMatrix& ver
 int getDeg(ArrayMatrix& vertexList, int vertexAmount, int vertexTitle) {
     int result = 0;
     //Циклом подсчитывается количество смежных вершин
-    for (size_t i = 0; i < vertexAmount; i++)
+    for (int i = 0; i < vertexAmount; ++i)
     {
         result += vertexList[vertexTitle][i];
     }
     return result;
 }
 
-bool conditionDirak(ArrayMatrix& vertexList, int vertexAmount) {
-    //Условие Дирака работает только при наличии больше 3 вершин
-    if (vertexAmount > 3) {
-        //Задаётся тестовое значение
-        int check = vertexAmount / 2;
-        //Циклом определяется больше ли тестового значения каждая степень вершины 
-        for (size_t i = 0; i < vertexAmount; i++)
-        {
-            //Если нет - то условие Дирака не соблюдено
-            if(getDeg(vertexList, vertexAmount, i) < check)
-                return false;
-        }
-        return true;
+bool conditionDirac(ArrayMatrix& vertexList, int vertexAmount) {
+    //Задаётся тестовое значение
+    int check = vertexAmount / 2;
+    //Циклом определяется больше ли тестового значения каждая степень вершины
+    for (int i = 0; i < vertexAmount; ++i) {
+        //Если нет - то условие Дирака не соблюдено
+        if(getDeg(vertexList, vertexAmount, i) <= check)
+            return false;
     }
-    else {
-        return false;
-    }
+    return true;
 }
 
 void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
@@ -154,4 +148,13 @@ void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
 
 bool checkAdjacency(int firstVertex, int secondVertex, ArrayMatrix& vertexList) {
     return vertexList[firstVertex - 1][secondVertex - 1] != 0;
+}
+
+bool oreTheorem(ArrayMatrix &vertexList, int vertexAmount) {
+    int i;
+    for (i = 1; i < vertexAmount; ++i) {
+        if (!vertexList[0][i])
+            break;
+    }
+    return getDeg(vertexList, vertexAmount, 0) + getDeg(vertexList, vertexAmount, i) >= vertexAmount;
 }
