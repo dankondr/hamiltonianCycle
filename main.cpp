@@ -40,7 +40,7 @@ int main() {
     StackInt vertexStack;
     int vertex = 0;
     int count = 0;
-
+    short output = 5;
 
     //Вывод смежной матрицы
     for (int i = 0; i < vertexAmount; ++i) {
@@ -53,26 +53,38 @@ int main() {
     //Определение гамильтонового цикла
     if (vertexAmount <= 3) {
         if (vertexAmount == 3) {
-            if (checkAdjacency(1, 3, vertexList)) {
-                std::cout << "Hamiltonian Cycle exists.\n";
-            } else {
-                std::cout << "Hamiltonian Cycle is not exists.\n";
-            }
-        } else {
-            std::cout << "Hamiltonian Cycle is not exists.\n";
+            if (checkAdjacency(1, 3, vertexList))
+                output = 1;
         }
     } else if (conditionDirac(vertexList, vertexAmount)) {
-        std::cout << "Dirac's condition implemented. Hamiltonian Cycle exists.\n";
+        output = 2;
     } else if (oreTheorem(vertexList, vertexAmount)) {
-        std::cout << "Ore's theorem implemented. Hamiltonian Cycle exists.\n";
+        output = 3;
     } else {
         findHamiltonianCycle(vertexAmount, vertexList, count, vertex, path, vertexStack);
         if(count)
-            std::cout << "Hamiltonian Cycle exists.\n";
+            output = 1;
         else
-            std::cout << "Hamiltonian Cycle is not exists.\n";
+            output = 0;
     }
-
+    //Вывод результата
+    switch (output) {
+        case 0: // Гамильтонов цикл не существует
+            std::cout << "Hamiltonian Cycle is not exists.\n";
+            break;
+        case 1: // Гамильтонов цикл существует
+            std::cout << "Hamiltonian Cycle exists.\n";
+            break;
+        case 2: // условие Дирака выполнено
+            std::cout << "Dirac's condition implemented. Hamiltonian Cycle exists.\n";
+            break;
+        case 3: // теорема Оре выполнена
+            std::cout << "Ore's theorem implemented. Hamiltonian Cycle exists.\n";
+            break;
+        default:
+            std::cout << "Error: nothing worked.\n";
+            break;
+    }
     input.close();
     system("pause");
     return 0;
@@ -131,6 +143,8 @@ void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
     if(vertexStack.size() == vertexAmount && vertexList[vertex][0] == 1)
         count++;
 
+    if (count)
+        return;
 
     for(int i = vertexAmount - 1; i >= 0; i--)
     {
