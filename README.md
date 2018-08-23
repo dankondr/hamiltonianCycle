@@ -1,8 +1,8 @@
-# Hamiltonian Cycle
-#####This program helps user to identify is there a hamiltonian cycle in loaded graph.
-##How to use
+# Hamiltonian Cycle #
+**This program helps user to identify is there a hamiltonian cycle in loaded graph.**
+<h2>How to use</h2>
 Adjacency matrix should be in .txt file and be formatted as stated below.
-#####Adjacency matrix format:
+<br />**Adjacency matrix format:**
 ```
 Graph1 //graph name
 16 //number of vertex
@@ -24,8 +24,8 @@ Graph1 //graph name
 0000010001010010
 ```
 
-#####Example of output:<br />
+**Example of output:**<br />
 <img src="https://image.ibb.co/i6AFkz/Get_Image_1.gif" width="500">
 
-##Origin
+<h2>Origin</h2>
 This program was made in Voronovo HSE at August 2018.
