@@ -81,7 +81,7 @@ int main() {
         case 3: // теорема Оре выполнена
             std::cout << "Ore's theorem implemented. Hamiltonian Cycle exists.\n";
             break;
-        default:
+        default:// Вывод сообщения об ошибке
             std::cout << "Error: nothing worked.\n";
             break;
     }
