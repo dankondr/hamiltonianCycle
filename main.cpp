@@ -69,7 +69,7 @@ int main() {
     }
     //Вывод результата
     switch (output) {
-        case 1: // Гамильтонов цикл существует
+        case 1: // Поиск цикла подбором успешен
             std::cout << "Hamiltonian Cycle exists.\n";
             break;
         case 2: // условие Дирака выполнено
@@ -78,7 +78,7 @@ int main() {
         case 3: // теорема Оре выполнена
             std::cout << "Ore's theorem implemented. Hamiltonian Cycle exists.\n";
             break;
-        default:// Вывод сообщения об ошибке
+        default:// Гамильтонов цикл не существует
             std::cout << "Hamiltonian Cycle is not exists.\n";
             break;
     }
