@@ -10,6 +10,10 @@ typedef std::vector<std::vector<int>> ArrayMatrix;
 typedef std::vector<bool> ArrayBool;
 typedef std::stack<int> StackInt;
 
+//Функция, открывающая файл
+bool openFile(std::ifstream&, const std::string&);
+//Функция, запрашивающая имя файла
+std::string getFileName();
 //Функция, считывающая матрицу с файла
 void processInput(std::ifstream&, unsigned&, ArrayMatrix&);
 //Функция, вычисляющая степень вершины
@@ -25,12 +29,10 @@ bool checkAdjacency(int, int, ArrayMatrix&);
 bool oreTheorem(ArrayMatrix&, int);
 
 int main() {
+    std::string fileName = getFileName();
     std::ifstream input;
-    input.open("inputFiles/input.txt", ios_base::in);
-    if (!input) {
-        std::cout << "Error: file isn't found" << '\n';
+    if (!openFile(input, fileName))
         return 1;
-    }
     std::string graphName;
     std::getline(input, graphName); // ввод названия
     unsigned vertexAmount = 0;
@@ -40,7 +42,7 @@ int main() {
     StackInt vertexStack;
     int vertex = 0;
     int count = 0;
-    short output = 5;
+    short output = 0;
 
     //Вывод смежной матрицы
     for (int i = 0; i < vertexAmount; ++i) {
@@ -53,7 +55,7 @@ int main() {
     //Определение гамильтонового цикла
     if (vertexAmount <= 3) {
         if (vertexAmount == 3) {
-            if (checkAdjacency(1, 3, vertexList))
+            if (checkAdjacency(0, 2, vertexList))
                 output = 1;
         }
     } else if (conditionDirac(vertexList, vertexAmount)) {
@@ -64,14 +66,9 @@ int main() {
         findHamiltonianCycle(vertexAmount, vertexList, count, vertex, path, vertexStack);
         if(count)
             output = 1;
-        else
-            output = 0;
     }
     //Вывод результата
     switch (output) {
-        case 0: // Гамильтонов цикл не существует
-            std::cout << "Hamiltonian Cycle is not exists.\n";
-            break;
         case 1: // Гамильтонов цикл существует
             std::cout << "Hamiltonian Cycle exists.\n";
             break;
@@ -82,13 +79,14 @@ int main() {
             std::cout << "Ore's theorem implemented. Hamiltonian Cycle exists.\n";
             break;
         default:// Вывод сообщения об ошибке
-            std::cout << "Error: nothing worked.\n";
+            std::cout << "Hamiltonian Cycle is not exists.\n";
             break;
     }
     input.close();
     system("pause");
     return 0;
 }
+
 
 // Функция, считывающая матрицу с файла
 void processInput(std::ifstream& input, unsigned& vertexAmount, ArrayMatrix& vertexList) {
@@ -161,7 +159,7 @@ void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
 }
 
 bool checkAdjacency(int firstVertex, int secondVertex, ArrayMatrix& vertexList) {
-    return vertexList[firstVertex - 1][secondVertex - 1] != 0;
+    return vertexList[firstVertex][secondVertex] != 0;
 }
 
 bool oreTheorem(ArrayMatrix &vertexList, int vertexAmount) {
@@ -171,4 +169,21 @@ bool oreTheorem(ArrayMatrix &vertexList, int vertexAmount) {
             break;
     }
     return getDeg(vertexList, vertexAmount, 0) + getDeg(vertexList, vertexAmount, i) >= vertexAmount;
+}
+
+bool openFile(std::ifstream &input, const std::string &fileName) {
+    std::string filePath = "inputFiles/" + fileName;
+    input.open(filePath, ios_base::in);
+    if (!input) {
+        std::cout << "Error: file isn't found" << '\n';
+        return false;
+    }
+    return true;
+}
+
+std::string getFileName() {
+    std::cout << "Enter the file name: ";
+    std::string fileName;
+    std::cin >> fileName;
+    return fileName;
 }
