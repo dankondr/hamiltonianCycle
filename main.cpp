@@ -27,6 +27,8 @@ void findHamiltonianCycle(int, ArrayMatrix&, int&,
 bool checkAdjacency(int, int, ArrayMatrix&);
 //Функция, проверяющая на теорему Оре
 bool oreTheorem(ArrayMatrix&, int);
+//Функция, определяющая может ли путь быть продолжен
+bool pathCanBeContinued(ArrayMatrix&, int, int);
 
 int main() {
     std::string fileName = getFileName();
@@ -146,6 +148,9 @@ void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
 
     for(int i = vertexAmount - 1; i >= 0; i--)
     {
+        while(!pathCanBeContinued(vertexList, vertexAmount, i) && i-1) {
+            i--;
+        }
         //Проверка смежных вершин на посещённость
         if (vertexList[vertex][i] == 1 && !path[i]) {
             path[vertex] = true;
@@ -186,4 +191,12 @@ std::string getFileName() {
     std::string fileName;
     std::cin >> fileName;
     return fileName;
+}
+
+bool pathCanBeContinued(ArrayMatrix &vertexList, int vertexAmount, int vertex) {
+    for (int i = 0; i < vertexAmount; ++i) {
+        if(vertexList[vertex][i] == 1)
+            return true;
+    }
+    return false;
 }
