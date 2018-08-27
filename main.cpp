@@ -7,6 +7,7 @@
 using namespace std;
 
 typedef std::vector<std::vector<int>> ArrayMatrix;
+typedef std::vector<int> ArrayInt;
 typedef std::vector<bool> ArrayBool;
 typedef std::stack<int> StackInt;
 
@@ -21,14 +22,15 @@ int getDeg(ArrayMatrix&, int, int);
 //Функция, проверяющая на условие Дирака
 bool conditionDirac(ArrayMatrix&, int);
 //Рекурсивная функция поиска гамильтонового цикла
-void findHamiltonianCycle(int, ArrayMatrix&, int&,
-                          int, ArrayBool&, StackInt&);
+void findHamiltonianCycle(int, ArrayMatrix &, int &, int, ArrayBool &, StackInt &);
 //Проверка на смежность
 bool checkAdjacency(int, int, ArrayMatrix&);
 //Функция, проверяющая на теорему Оре
 bool oreTheorem(ArrayMatrix&, int);
 //Функция, определяющая может ли путь быть продолжен
-bool pathCanBeContinued(ArrayMatrix&, int, int);
+void buildVertexPathsList(ArrayMatrix &, int, ArrayInt &);
+//Функция, определяющая, куда ходить не стоит
+void setupPathList(ArrayBool&, int, ArrayInt&);
 
 int main() {
     std::string fileName = getFileName();
@@ -42,18 +44,12 @@ int main() {
     processInput(input, vertexAmount, vertexList);
     ArrayBool path(vertexAmount);
     StackInt vertexStack;
+    ArrayInt vertexPathsList(vertexAmount);
     int vertex = 0;
     int count = 0;
     short output = 0;
 
-    //Вывод смежной матрицы
-    for (int i = 0; i < vertexAmount; ++i) {
 
-        for (int j = 0; j < vertexAmount; ++j) {
-            std::cout << vertexList[i][j] << ' ';
-        }
-        std::cout << '\n';
-    }
     //Определение гамильтонового цикла
     if (vertexAmount <= 3) {
         if (vertexAmount == 3) {
@@ -65,6 +61,8 @@ int main() {
     } else if (oreTheorem(vertexList, vertexAmount)) {
         output = 3;
     } else {
+        buildVertexPathsList(vertexList, vertexAmount, vertexPathsList);
+        setupPathList(path, vertexAmount, vertexPathsList);
         findHamiltonianCycle(vertexAmount, vertexList, count, vertex, path, vertexStack);
         if(count)
             output = 1;
@@ -85,7 +83,6 @@ int main() {
             break;
     }
     input.close();
-    system("pause");
     return 0;
 }
 
@@ -136,8 +133,8 @@ bool conditionDirac(ArrayMatrix& vertexList, int vertexAmount) {
     return true;
 }
 
-void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
-                          int vertex, ArrayBool& path, StackInt& vertexStack) {
+void findHamiltonianCycle(int vertexAmount, ArrayMatrix &vertexList, int &count, int vertex, ArrayBool &path,
+                          StackInt &vertexStack) {
     //Добавление вершины в стек
     vertexStack.push(vertex);
     if(vertexStack.size() == vertexAmount && vertexList[vertex][0] == 1)
@@ -148,9 +145,6 @@ void findHamiltonianCycle(int vertexAmount, ArrayMatrix& vertexList, int& count,
 
     for(int i = vertexAmount - 1; i >= 0; i--)
     {
-        while(!pathCanBeContinued(vertexList, vertexAmount, i) && i-1) {
-            i--;
-        }
         //Проверка смежных вершин на посещённость
         if (vertexList[vertex][i] == 1 && !path[i]) {
             path[vertex] = true;
@@ -193,10 +187,18 @@ std::string getFileName() {
     return fileName;
 }
 
-bool pathCanBeContinued(ArrayMatrix &vertexList, int vertexAmount, int vertex) {
+void buildVertexPathsList(ArrayMatrix& vertexList, int vertexAmount, ArrayInt& vertexPathsList) {
     for (int i = 0; i < vertexAmount; ++i) {
-        if(vertexList[vertex][i] == 1)
-            return true;
+        for (int j = 0; j < vertexAmount; ++j) {
+            if (vertexList[i][j])
+                vertexPathsList[i]++;
+        }
     }
-    return false;
+}
+
+void setupPathList(ArrayBool& path, int vertexAmount, ArrayInt& vertexPathsList) {
+    for (int i = 0; i < vertexAmount; ++i) {
+        if (vertexPathsList[i] == 1)
+            path[i] = true;
+    }
 }
